@@ -41,7 +41,11 @@ class PartyTestsDatabase(unittest.TestCase):
 
         self.client = app.test_client()
         app.config['TESTING'] = True
+        app.config['SECRET_KEY'] = 'key'
 
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess['RSVP'] = True
         # Connect to test database (uncomment when testing database)
         connect_to_db(app, "postgresql:///testdb")
 
@@ -61,6 +65,7 @@ class PartyTestsDatabase(unittest.TestCase):
 
         result = self.client.get('/games')
         self.assertIn("Power Grid", result.data)
+
 
 
 
